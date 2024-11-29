@@ -9,7 +9,6 @@ from .models import (
     Event,
     UpdateEvent,
     DatabaseEvents,
-    event_serializer,
 )
 
 

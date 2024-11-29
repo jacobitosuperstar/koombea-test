@@ -39,19 +39,7 @@ def event_updater(entry: UpdateEvent, event: Event) -> Event:
     """
     for key, value in entry.items():
         event[key] = value
-    event["status"] = "NotProcessed"
     return event
-
-def event_serializer(event: Event) -> Dict:
-    """Simpler dict converter. Many types, many problems.
-    """
-    data = {}
-    for key, value in event.items():
-        if isinstance(value, uuid.UUID):
-            data[key] = str(value)
-        else:
-            data[key] = value
-    return data
 
 
 # Simple thread safe databse
