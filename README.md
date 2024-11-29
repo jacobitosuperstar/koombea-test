@@ -10,6 +10,7 @@ Test for the Senior Python Developer Role
   - [FILE STRUCTURE](#file-structure)
 - [SET UP](#set-up)
   - [RUNNING THE APP](#running-the-app)
+  - [RUNNING THE TESTS](#running-the-tests)
 
 # ARCHITECTURE OVERVIEW
 As the test suggested the main idea was to create a backend with a simple in 
