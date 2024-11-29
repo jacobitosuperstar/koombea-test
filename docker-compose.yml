@@ -1,0 +1,52 @@
+networks:
+  server_network:
+
+services:
+  # RestAPI
+  web:
+    build:
+      context: ./RestAPI/
+      dockerfile: ./Dockerfile
+    container_name: web
+    develop:
+      watch:
+        - action: sync
+          path: ./RestAPI
+          target: /app
+        - action: rebuild
+          path: ./RestAPI/Pipfile.lock
+    depends_on:
+      - rabbit_mq
+    ports:
+      - "8000:8000"
+    networks:
+      - server_network
+
+  # Message Broker
+  rabbit_mq:
+    image: "rabbitmq"
+    expose:
+      - "5672"
+    ports:
+      - "5672:5672"
+    networks:
+      - server_network
+
+  # NotificationProcessor
+  worker:
+    build:
+      context: ./NotificationProcessor
+      dockerfile: ./Dockerfile
+    container_name: worker
+    develop:
+      watch:
+        - action: sync
+          path: ./NotificationProcessor
+          target: /app
+        - action: rebuild
+          path: ./RestAPI/Pipfile.lock
+    depends_on:
+      - web
+      - rabbit_mq
+    networks:
+      - server_network

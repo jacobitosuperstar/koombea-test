@@ -1,0 +1,53 @@
+{
+     "description": "Testing Event Creation, Event Update and Listing all the events",
+     "test_cases": [
+         {
+             "test_description": "Getting all the elements from the db",
+             "url": "/events",
+             "http_method": "GET",
+             "input":{},
+             "expected_output": {"status_code": 200}
+         },
+         {
+             "test_description": "Creating a new database entry",
+             "url": "/events",
+             "http_method": "POST",
+             "input":{
+                "user_id": "2",
+                "description": "Another test"
+             },
+             "expected_output": {
+                 "status_code": 200,
+                 "event": {
+                     "user_id": "2",
+                     "description": "Another test",
+                     "status": "NotProcessed"
+                 }
+             }
+         },
+         {
+             "test_description": "Test Info",
+             "url": "/events/fe24f3a2-ae47-11ef-8513-2a70e04c3944",
+             "http_method": "GET",
+             "input":{},
+             "expected_output": {"status_code": 200}
+         },
+         {
+             "test_description": "Test updating",
+             "url": "/events/fe24f3a2-ae47-11ef-8513-2a70e04c3944",
+             "http_method": "POST",
+             "input":{
+                "description": "Updated test"
+             },
+             "expected_output": {
+                 "status_code": 200,
+                 "event": {
+                     "event_id": "fe24f3a2-ae47-11ef-8513-2a70e04c3944",
+                     "status": "NotProcessed",
+                     "user_id": "1",
+                     "description": "Updated test"
+                 }
+             }
+         }
+     ]
+ }

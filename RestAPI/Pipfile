@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = {extras = ["standard"], version = "*"}
+pydantic = "*"
+pydantic-settings = "*"
+pika = "*"
+pytest = "*"
+orjson = "*"
+
+[dev-packages]
+ruff = "*"
+
+[requires]
+python_version = "*"
