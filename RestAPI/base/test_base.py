@@ -1,10 +1,9 @@
 from typing import List, Dict, Any
 import os
 import json
-import pytest
 from fastapi.testclient import TestClient
 from httpx import Response
-from RestAPI.main import app
+from ..main import app
 
 
 current_path: str = os.path.dirname(os.path.abspath(__file__))

@@ -2,10 +2,9 @@ from typing import List, Dict, Any
 import os
 import json
 import uuid
-import pytest
 from fastapi.testclient import TestClient
 from httpx import Response
-from RestAPI.main import app
+from ..main import app
 
 # Adding some information to the database so when tests are ran, they can be
 # ran at parallel
@@ -18,7 +17,7 @@ test_event: Event = Event(
     event_id=uuid.UUID("fe24f3a2-ae47-11ef-8513-2a70e04c3944"),
     status="NotProcessed",
 )
-db.add(test_event)
+db.storage.append(test_event)
 
 current_path: str = os.path.dirname(os.path.abspath(__file__))
 test_cases_folder: str = os.path.join(current_path, "tests")
@@ -42,7 +41,6 @@ def json_test_cases(folder_path:str) -> List[Dict]:
             test_cases_file: Dict[str, Any] = json.load(file)
         # appending the test cases into the test_cases list
         for test_case in test_cases_file["test_cases"]:
-            print(test_case)
             test_cases.append(
                 (
                     test_case["test_description"],
@@ -59,13 +57,16 @@ test_cases: List[Dict] = json_test_cases(test_cases_folder)
 
 client: TestClient = TestClient(app)
 
+#############################
+# AUTOMATIC TEST GENERATION #
+#############################
 
 def pytest_generate_tests(metafunc):
     if "input" in metafunc.fixturenames:
-        metafunc.parametrize('url, http_method, test_description, input, expected_output', test_cases)
+        metafunc.parametrize('test_description, url, http_method, input, expected_output', test_cases)
 
 
-def test_server(url, http_method, test_description, input, expected_output):
+def test_server(test_description, url, http_method, input, expected_output):
     match http_method:
         case "GET":
             response: Response = client.get(url)
@@ -82,10 +83,10 @@ def test_server(url, http_method, test_description, input, expected_output):
                 f"Expected {expected_output["status_code"]}, "
                 f"but got {response.status_code} in the test case {test_description}"
             )
-            for key, value in response.json().items():
-                assert expected_output[key] == value, (
-                    f"Expected {key}: {expected_output[key]}, "
-                    f"but got {key}: {value} in the test case {test_description}"
+            for key, value in expected_output["event"].items():
+                assert response.json()[key] == value, (
+                    f"Expected {key}: {value}, "
+                    f"but got {key}: {response.json()[key]} in the test case {test_description}"
                 )
         case "PUT":
             response: Response = client.put(
@@ -96,10 +97,10 @@ def test_server(url, http_method, test_description, input, expected_output):
                 f"Expected {expected_output["status_code"]}, "
                 f"but got {response.status_code} in the test case {test_description}"
             )
-            for key, value in response.json().items():
-                assert expected_output[key] == value, (
-                    f"Expected {key}: {expected_output[key]}, "
-                    f"but got {key}: {value} in the test case {test_description}"
+            for key, value in expected_output["event"].items():
+                assert response.json()[key] == value, (
+                    f"Expected {key}: {value}, "
+                    f"but got {key}: {response.json()[key]} in the test case {test_description}"
                 )
         case _:
-            print("What are you doing over here?")
+            assert False, "What are you even doing over here?"

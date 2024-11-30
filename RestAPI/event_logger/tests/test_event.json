@@ -35,7 +35,7 @@
          {
              "test_description": "Test updating",
              "url": "/events/fe24f3a2-ae47-11ef-8513-2a70e04c3944",
-             "http_method": "POST",
+             "http_method": "PUT",
              "input":{
                 "description": "Updated test"
              },
